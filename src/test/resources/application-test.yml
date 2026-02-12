@@ -1,0 +1,19 @@
+app:
+  external-api:
+    base-url: http://localhost:8089
+
+spring:
+  main:
+    web-application-type: servlet
+server:
+  port: 0  # random для тестов
+logging:
+  level:
+    com.example.useraggregator: DEBUG
+    wiremock: INFO
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 2000
+        readTimeout: 3000
