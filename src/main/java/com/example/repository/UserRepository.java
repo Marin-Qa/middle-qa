@@ -7,11 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
-//    List<User> findByEmailEndingWith(String domain);
-//    List<User> findByFirstNameContainingIgnoreCase(String firstName);
-//    List<User> findByLastNameContainingIgnoreCase(String lastName);
-//    List<User> findByJobContainingIgnoreCase(String job);
-//    List<User> findByIdContaining(Long id);
 
+    @Override
     Optional<User> findById(Long id);
 }

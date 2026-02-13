@@ -8,15 +8,25 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
   h2:
     console:
       enabled: true
+  mvc:
+    async:
+      request-timeout: 120000
 server:
   port: 8081
+
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    tags-sorter: alpha
+    operationsSorter: method
+    tagsSorter: alpha
   api-docs:
     enabled: true
+

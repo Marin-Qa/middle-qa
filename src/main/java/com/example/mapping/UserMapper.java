@@ -1,6 +1,7 @@
 package com.example.mapping;
 
 
+import com.example.dto.user.UserUpdateRequest;
 import com.example.dto.user.UsersResponse;
 import com.example.entity.User;
 import com.example.dto.user.UserCreateRequest;
@@ -9,9 +10,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -42,5 +42,12 @@ public class UserMapper {
                 (int) page.getTotalElements(),
                 page.getContent()
         );
+    }
+    @Transactional
+    public void updateEntityFromRequest(UserUpdateRequest request, User user){
+        if (request.firstName() != null) user.setFirstName(request.firstName());
+        if (request.lastName() != null) user.setLastName(request.lastName());
+        if (request.job() != null) user.setJob(request.job());
+        if (request.email() != null) user.setEmail(request.email());
     }
 }

@@ -5,12 +5,14 @@ import com.example.entity.*;
 import com.example.exception.UserNotFoundException;
 import com.example.mapping.UserMapper;
 import com.example.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -105,12 +108,28 @@ public class UserService {
                 })
                 .collect(Collectors.toList());
 
-        List<User> savedUsers = userRepository.saveAllAndFlush(newUsers);
+        List<User> savedUsers = userRepository.saveAll(newUsers);
+        userRepository.flush();
 
         List<SyncUserResponse> result = savedUsers.stream()
                 .map(SyncUserResponse::fromEntity)
                 .toList();
 
         return new SyncUsersResponse(result, savedUsers.size());
+    }
+
+    public UserResponse updateUser(Long id, UserUpdateRequest request) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Пользователь не найден: " + id));
+        userMapper.updateEntityFromRequest(request, user);
+        log.info("Обновлен пользователь: {} {}", user.getFirstName(), user.getLastName());
+        return userMapper.toResponse(user);
+
+    }
+
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден: " + id));
+        userRepository.delete(user);
+        log.info("Удален пользователь с ID: {}", id);
     }
 }
