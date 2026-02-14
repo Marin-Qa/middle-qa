@@ -35,9 +35,9 @@ public class UserService {
         return userMapper.toResponse(user);
     }
 
-    public UsersResponse getUsers(int page) {
+    public UsersResponse getUsers() {
         List<User> users = userRepository.findAll();
-        return new UsersResponse(page, users.size(), users);
+        return new UsersResponse(0, users.size(), users);
     }
 
     public UserResponse getUserById(Long id){
@@ -119,7 +119,7 @@ public class UserService {
     }
 
     public UserResponse updateUser(Long id, UserUpdateRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Пользователь не найден: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + id));
         userMapper.updateEntityFromRequest(request, user);
         log.info("Обновлен пользователь: {} {}", user.getFirstName(), user.getLastName());
         return userMapper.toResponse(user);
@@ -128,7 +128,7 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден: " + id));
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + id));
         userRepository.delete(user);
         log.info("Удален пользователь с ID: {}", id);
     }

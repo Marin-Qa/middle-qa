@@ -1,0 +1,45 @@
+package com.example.test.integration;
+
+import com.example.base.AbstractIntegrationTest;
+import com.example.endpoint.user.EndpointUser;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
+public class GetUsersTest extends AbstractIntegrationTest {
+
+    @Test
+    @DisplayName("Получение всех пользователей из БД")
+    void getUsers_shouldReturnListOfUsers_whenUserIdent(){
+
+        given()
+                .spec(requestSpecification)
+        .when()
+                .get(EndpointUser.USERS)
+        .then()
+
+                .statusCode(200)
+
+                .body("users_total", notNullValue())
+                .body("users_total", greaterThan(0))
+
+                .body("data", notNullValue())
+                .body("data.size()", greaterThan(0))
+
+                .body("data[0].keySet()", containsInAnyOrder(
+                        "id",
+                        "firstName",
+                        "lastName",
+                        "job",
+                        "email"
+                ))
+
+                .body("data.id", everyItem(notNullValue()))
+                .body("data.firstName", everyItem(allOf(notNullValue(), not(emptyString()))))
+                .body("data.lastName", everyItem(allOf(notNullValue(), not(emptyString()))))
+                .body("data.job", everyItem(allOf(notNullValue(), not(emptyString()))))
+                .body("data.email", everyItem(allOf(notNullValue(), not(emptyString()))));
+    }
+}

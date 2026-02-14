@@ -56,8 +56,8 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Все пользователи из БД")
-    public ResponseEntity<UsersResponse> getUsers(@RequestParam(defaultValue = "1") int page) {
-        return ResponseEntity.ok(userService.getUsers(page));
+    public ResponseEntity<UsersResponse> getUsers() {
+        return ResponseEntity.ok(userService.getUsers());
     }
 
     @GetMapping("/filtered")
