@@ -1,0 +1,53 @@
+package com.example.test.integration;
+
+import com.example.base.AbstractIntegrationTest;
+import com.example.endpoint.user.EndpointUser;
+import com.example.test.integration.utils.CreateUserUtil;
+import com.example.test.integration.utils.GetUserUtil;
+import org.junit.jupiter.api.*;
+
+import java.util.Map;
+import java.util.Random;
+
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
+public class DeleteUserTest extends AbstractIntegrationTest {
+
+    private GetUserUtil getUserUtil;
+    private CreateUserUtil createUserUtil;
+
+    @BeforeEach
+    void setUpUtil() {
+        getUserUtil = new GetUserUtil(requestSpecification);
+        createUserUtil = new CreateUserUtil(requestSpecification);
+    }
+
+    @DisplayName("Удаление пользователя по ID")
+    @RepeatedTest(10)
+    void deleteUser_shouldRemoveUser() {
+        var createdUser = createUserUtil.createUser();
+        var userIdToDelete = ((Number) createdUser.get("id")).intValue();
+
+        var userBeforeDelete = getUserUtil.getUser(userIdToDelete);
+        assertThat(userBeforeDelete).as("Пользователь существует до удаления").isNotNull();
+        assertThat(userBeforeDelete.get("id")).as("ID пользователя").isEqualTo(userIdToDelete);
+
+        given()
+                .spec(requestSpecification)
+                .pathParam("id", userIdToDelete)
+        .when()
+                .delete(EndpointUser.DELETE)
+        .then()
+                .statusCode(204);
+
+        given()
+                .spec(requestSpecification)
+                .pathParam("id", userIdToDelete)
+        .when()
+                .get(EndpointUser.USERS_BY_ID)
+        .then()
+                .statusCode(404);
+    }
+}

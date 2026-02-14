@@ -30,3 +30,9 @@ springdoc:
   api-docs:
     enabled: true
 
+dummyjson:
+    base-url: https://dummyjson.com
+    timeout-seconds: 60
+    default-headers:
+      Content-Type: application/json
+      Accept: application/json

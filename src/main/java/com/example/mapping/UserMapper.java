@@ -22,7 +22,7 @@ public class UserMapper {
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
         user.setJob(request.job());
-        user.setEmail("user" + System.currentTimeMillis() + "@test.com");
+        user.setEmail(request.email());
         return user;
     }
     

@@ -10,9 +10,9 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
 
-server:
-  port: 0
-db:
-  port: 8081
-url:
-  url: "http://localhost"
+dummyjson:
+  base-url: http://localhost:8089
+
+wiremock:
+  server:
+    port: 8089
