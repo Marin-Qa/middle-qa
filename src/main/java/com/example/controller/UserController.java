@@ -56,8 +56,11 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Все пользователи из БД")
-    public ResponseEntity<UsersResponse> getUsers() {
-        return ResponseEntity.ok(userService.getUsers());
+    public ResponseEntity<UsersResponse> getUsers(@RequestParam
+                                                      @Min(value = 1, message = "Limit должен быть >= 1")
+                                                      @Max(value = 100, message = "Limit не может быть > 100")
+                                                      int limit) {
+        return ResponseEntity.ok(userService.getUsers(limit));
     }
 
     @GetMapping("/filtered")

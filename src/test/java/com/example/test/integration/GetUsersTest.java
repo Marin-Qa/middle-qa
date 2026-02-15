@@ -14,10 +14,11 @@ public class GetUsersTest extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("Получение всех пользователей из БД")
-    void getUsers_shouldReturnListOfUsers_whenUserIdent(){
+    void getUsers_shouldReturnListOfUsers(){
 
         given()
                 .spec(requestSpecification)
+                .queryParam("limit",10)
         .when()
                 .get(EndpointUser.USERS)
         .then()

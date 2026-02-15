@@ -9,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -35,9 +36,10 @@ public class UserService {
         return userMapper.toResponse(user);
     }
 
-    public UsersResponse getUsers() {
-        List<User> users = userRepository.findAll();
-        return new UsersResponse(0, users.size(), users);
+    public UsersResponse getUsers(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);  // страница 0, размер = limit
+        Page<User> users = userRepository.findAll(pageable);
+        return new UsersResponse(0, users.getSize(), users.getContent());
     }
 
     public UserResponse getUserById(Long id){
