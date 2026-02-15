@@ -51,6 +51,6 @@ public class GetUserById extends AbstractIntegrationTest {
         Random random = new Random();
         int count = 5;
         return IntStream.range(0, count)
-                .mapToObj(i -> Arguments.of(random.nextInt(100) + 1));
+                .mapToObj(i -> Arguments.of((random.nextInt(100) + 1)));
     }
 }
