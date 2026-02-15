@@ -19,7 +19,7 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
 
     @RepeatedTest(10)
     void fullUserWorkflow() {
-        // Синхронизация пользователей
+        /* Синхронизация пользователей */
         given()
                 .contentType(ContentType.JSON)
                 .queryParam("limit", 100)
@@ -30,7 +30,7 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
                 .body("users", hasSize(100))
                 .body("total", equalTo(100));
 
-        // Получаем id пользователя из существующих
+        /* Получаем id пользователя из существующих */
         int id = given()
                 .contentType(ContentType.JSON)
         .when()
@@ -40,7 +40,7 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
                 .extract()
                 .path("data[0].id");
 
-        // Обновляем пользователя id=1
+        /*  Обновляем пользователя id */
         UserUpdateRequest updateRequest = new UserUpdateRequest(
                 "UpdatedFirst",
                 "UpdatedLast",
@@ -59,7 +59,7 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
                 .body("firstName", equalTo("UpdatedFirst"))
                 .body("lastName", equalTo("UpdatedLast"));
 
-        // Проверяем что user изменен
+        /* Проверяем что user изменен */
         given()
                 .contentType(ContentType.JSON)
                 .pathParams("id", id)
@@ -71,7 +71,7 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
                 .body("lastName", equalTo("UpdatedLast"));
 
 
-        // Создаем нового пользователя
+        /* Создаем нового пользователя */
         UserCreateRequest createRequest = new UserCreateRequest(
                 "John",
                 "Doe",
@@ -92,7 +92,7 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
                 .extract()
                 .path("id");
 
-        // Удаляем созданного пользователя
+        /* Удаляем созданного пользователя */
         given()
                 .contentType(ContentType.JSON)
                 .pathParams("id", newUserId)
