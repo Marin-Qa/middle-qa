@@ -6,9 +6,6 @@ import com.example.test.integration.utils.CreateUserUtil;
 import com.example.test.integration.utils.GetUserUtil;
 import org.junit.jupiter.api.*;
 
-import java.util.Map;
-import java.util.Random;
-
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -46,7 +43,7 @@ public class DeleteUserTest extends AbstractIntegrationTest {
                 .spec(requestSpecification)
                 .pathParam("id", userIdToDelete)
         .when()
-                .get(EndpointUser.USERS_BY_ID)
+                .get(EndpointUser.USER_BY_ID)
         .then()
                 .statusCode(404);
     }

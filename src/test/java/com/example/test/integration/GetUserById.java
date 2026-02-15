@@ -7,6 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Random;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
@@ -24,7 +26,7 @@ public class GetUserById extends AbstractIntegrationTest {
                 .spec(requestSpecification)
                 .pathParams("id", id)
         .when()
-                .get(EndpointUser.USERS_BY_ID)
+                .get(EndpointUser.USER_BY_ID)
         .then()
 
                 .statusCode(200)
@@ -45,12 +47,9 @@ public class GetUserById extends AbstractIntegrationTest {
     }
 
     static Stream<Arguments> getUsersById() {
-        return Stream.of(
-                arguments(1),
-                arguments(2),
-                arguments(3),
-                arguments(4),
-                arguments(5)
-        );
+        Random random = new Random();
+        int count = 5;
+        return IntStream.range(0, count)
+                .mapToObj(i -> Arguments.of(random.nextInt(100) + 1));
     }
 }
