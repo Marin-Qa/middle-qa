@@ -7,6 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Random;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
@@ -63,8 +65,7 @@ public class GetFilteredUsersTest extends AbstractIntegrationTest {
     @ParameterizedTest
     @DisplayName("Поиск по id")
     @MethodSource("getUsersWhenFilterByIDs")
-    void getUsers_shouldReturnUser_whenFilterByID( String queryValue){
-
+    void getUsers_shouldReturnUser_whenFilterByID(int queryValue){
         given()
                 .spec(requestSpecification)
                 .queryParam("id", queryValue)
@@ -97,12 +98,10 @@ public class GetFilteredUsersTest extends AbstractIntegrationTest {
     }
 
     static Stream<Arguments> getUsersWhenFilterByIDs() {
-        return Stream.of(
-                arguments( "1"),
-                arguments( "3"),
-                arguments( "5"),
-                arguments( "7")
-        );
+        Random random = new Random();
+        int count = 5;
+        return IntStream.range(0, count)
+                .mapToObj(i -> Arguments.of((random.nextInt(100) + 1)));
     }
 
     @ParameterizedTest
