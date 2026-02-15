@@ -1,0 +1,10 @@
+{
+  "users": [
+    { "id": 1, "firstName": "Emily", "lastName": "Johnson", "job": "Dummy QA Engineer", "email": "emily@test.com" },
+    { "id": 2, "firstName": "Michael", "lastName": "Williams", "job": "Dummy QA Engineer", "email": "michael@test.com" },
+    { "id": 3, "firstName": "Sophia", "lastName": "Brown", "job": "Dummy QA Engineer", "email": "sophia@test.com" },
+    { "id": 4, "firstName": "James", "lastName": "Davis", "job": "Dummy QA Engineer", "email": "james@test.com" },
+    { "id": 5, "firstName": "Emma", "lastName": "Miller", "job": "Dummy QA Engineer", "email": "emma@test.com" }
+  ],
+  "total": 5
+}

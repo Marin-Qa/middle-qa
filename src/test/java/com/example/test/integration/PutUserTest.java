@@ -3,6 +3,7 @@ package com.example.test.integration;
 import com.example.base.AbstractIntegrationTest;
 import com.example.endpoint.user.EndpointUser;
 import com.example.test.integration.utils.GetUserUtil;
+import com.example.test.integration.utils.UserUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
@@ -26,23 +27,23 @@ public class PutUserTest extends AbstractIntegrationTest {
     private String jobGet = "QA";
     private String emailGet = "emily@dummy.com";;
 
-    GetUserUtil getUserUtil;
+    private GetUserUtil getUserUtil;
+    private UserUtil userUtil;
 
     @BeforeEach
     void setGetUserUtil(){
         getUserUtil = new GetUserUtil(requestSpecification);
+        userUtil = new UserUtil();
     }
 
     @ParameterizedTest
     @DisplayName("Проверка изменения пользователя")
     @MethodSource("putUserValue")
-    void putUser_shouldPutUSerInDb( String firstName, String lastName, String job, String email){
-        int id = 1;
+    void putUser_shouldPutUSerInDb( String firstName, String lastName, String job, String email) {
 
-        var user = getUserUtil.getUser(id);
+        var user = getUserUtil.getUserWithRetry(10,500);
+        var id = userUtil.getIdUserFromData(user);
 
-        var idGet = user.get("id");
-                ;
         firstNameGet = user.get("firstName").toString();
         lastNameGet = user.get("lastName").toString();
         jobGet = user.get("job").toString();
@@ -57,10 +58,10 @@ public class PutUserTest extends AbstractIntegrationTest {
 
          given()
                  .spec(requestSpecification)
-                 .pathParams("id", idGet)
+                 .pathParams("id", id)
                  .body(userUpdate)
          .when()
-                 .put(EndpointUser.USERS_BY_ID)
+                 .put(EndpointUser.PUT)
          .then()
 
                  .statusCode(200)

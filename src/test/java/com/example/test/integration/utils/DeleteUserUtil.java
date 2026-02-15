@@ -6,7 +6,7 @@ import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 
-public class DeleteUserUtil extends AbstractIntegrationTest {
+public class DeleteUserUtil {
 
     private final RequestSpecification spec;
 
