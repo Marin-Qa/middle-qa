@@ -10,6 +10,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
+@Tag("integration")
 public class DeleteUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;

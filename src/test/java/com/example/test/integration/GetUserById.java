@@ -3,6 +3,7 @@ package com.example.test.integration;
 import com.example.base.AbstractIntegrationTest;
 import com.example.endpoint.user.EndpointUser;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,7 +15,7 @@ import java.util.stream.Stream;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-
+@Tag("integration")
 public class GetUserById extends AbstractIntegrationTest {
 
     @ParameterizedTest

@@ -4,6 +4,7 @@ import com.example.base.AbstractWireMockIntegrationTest;
 import com.example.endpoint.user.EndpointUser;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -11,7 +12,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static java.lang.Integer.parseInt;
 import static org.hamcrest.Matchers.equalTo;
-
+@Tag("wiremock")
 public class SyncUsersWireMockTest extends AbstractWireMockIntegrationTest {
 
     @ParameterizedTest
