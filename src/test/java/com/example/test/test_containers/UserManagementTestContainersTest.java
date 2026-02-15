@@ -10,11 +10,12 @@ import com.example.test.integration.utils.DeleteUserUtil;
 import com.example.test.integration.utils.UserUtil;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-
+@Tag("test-containers")
 public class UserManagementTestContainersTest extends AbstractTestContainersIntegrationTest {
 
     private DeleteUserUtil deleteUserUtil;

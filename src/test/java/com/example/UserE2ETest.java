@@ -6,6 +6,7 @@ import com.example.dto.user.UserUpdateRequest;
 import com.example.endpoint.user.EndpointUser;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -13,6 +14,7 @@ import java.util.Random;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+@Tag("e2e")
 public class UserE2ETest extends AbstractTestContainersIntegrationTest {
 
     @RepeatedTest(10)
