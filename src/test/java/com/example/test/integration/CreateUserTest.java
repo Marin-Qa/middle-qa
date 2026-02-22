@@ -21,7 +21,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @Tag("integration")
-@Story("Services")
+@DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
+@Story("Integration")
 public class CreateUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;

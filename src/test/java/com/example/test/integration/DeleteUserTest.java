@@ -12,7 +12,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Tag("integration")
-@Story("Services")
+@DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
+@Story("Integration")
 public class DeleteUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;

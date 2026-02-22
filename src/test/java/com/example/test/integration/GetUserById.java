@@ -17,7 +17,8 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @Tag("integration")
-@Story("Services")
+@DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
+@Story("Integration")
 public class GetUserById extends AbstractIntegrationTest {
 
     @ParameterizedTest

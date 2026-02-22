@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.*;
 
 @Tag("e2e")
 @Story("Е2Е")
+@DisplayName("E2E тест")
 public class UserE2ETest extends AbstractTestContainersIntegrationTest {
 
     @Autowired
@@ -29,7 +30,7 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
 
     @Test
     @DisplayName("Полный успешный путь")
-    @Description("Проверяем успешный полный путь. С помощью test-containers. Контейнер используется для бд, postreSql")
+    @Description("Проверяем успешный полный путь. С помощью test-containers. Контейнер используется для бд, postgresql")
     @Owner("Marin")
     @Severity(SeverityLevel.BLOCKER)
     void fullUserWorkflow() {
@@ -75,13 +76,13 @@ public class UserE2ETest extends AbstractTestContainersIntegrationTest {
                     .send();
         });
 
-        putUser.then().log().all()
+        putUser.then()
                 .statusCode(HttpStatus.OK.value())
                 .body("firstName", equalTo("UpdatedFirst"))
                 .body("lastName", equalTo("UpdatedLast"));
 
 
-        Response checkPutUser = Allure.step("Шаг 4. Проверяем, что user изменен", () ->
+        Response checkPutUser = Allure.step("Шаг 4. Проверяем, что пользователь изменен", () ->
                 rest.serviceName(ServiceName.USER_MANAGEMENT)
                         .get(EndpointUser.USER_BY_ID)
                         .pathParam(PathParamsName.ID, id.toString())

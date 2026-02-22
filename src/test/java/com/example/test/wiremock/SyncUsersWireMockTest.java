@@ -22,6 +22,7 @@ import static java.lang.Integer.parseInt;
 import static org.hamcrest.Matchers.equalTo;
 
 @Tag("wiremock")
+@DisplayName("Тесты с WireMock")
 public class SyncUsersWireMockTest extends AbstractWireMockIntegrationTest {
 
     @Autowired
@@ -57,8 +58,7 @@ public class SyncUsersWireMockTest extends AbstractWireMockIntegrationTest {
                 .send()
         );
 
-        // Выполняем проверки
-        response.then().log().all()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .body("users.size()", equalTo(parseInt(limit)))
                 .body("users[0].firstName", equalTo("Emily"))

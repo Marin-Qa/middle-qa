@@ -99,6 +99,8 @@ public class RestUtil {
 
             String respBody = Objects.toString(resp.getBody().asPrettyString(), "");
             Allure.addAttachment("Тело ответа", ContentType.JSON.toString(), respBody);
+            int respStatusCode = resp.statusCode();
+            Allure.addAttachment("Код ответа", String.valueOf(respStatusCode));
 
             return resp;
         });
