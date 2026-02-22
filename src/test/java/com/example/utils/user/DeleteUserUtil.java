@@ -1,7 +1,6 @@
-package com.example.test.integration.utils;
+package com.example.utils.user;
 
-import com.example.base.AbstractIntegrationTest;
-import com.example.endpoint.user.EndpointUser;
+import com.example.constants.endpoints.user.EndpointUser;
 import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;

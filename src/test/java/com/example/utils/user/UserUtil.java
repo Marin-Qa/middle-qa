@@ -1,4 +1,4 @@
-package com.example.test.integration.utils;
+package com.example.utils.user;
 
 import java.util.Map;
 

@@ -1,9 +1,10 @@
 package com.example.test.integration;
 
 import com.example.base.AbstractIntegrationTest;
-import com.example.endpoint.user.EndpointUser;
-import com.example.test.integration.utils.CreateUserUtil;
-import com.example.test.integration.utils.GetUserUtil;
+import com.example.constants.endpoints.user.EndpointUser;
+import com.example.utils.user.CreateUserUtil;
+import com.example.utils.user.GetUserUtil;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
@@ -11,6 +12,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Tag("integration")
+@Story("Services")
 public class DeleteUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;

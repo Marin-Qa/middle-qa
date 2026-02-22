@@ -1,26 +1,35 @@
 package com.example.test.test_containers;
 
 import com.example.base.AbstractTestContainersIntegrationTest;
+import com.example.constants.services.ServiceName;
 import com.example.dto.user.UserCreateRequest;
 import com.example.dto.user.UserUpdateRequest;
-import com.example.endpoint.user.EndpointUser;
-import com.example.entity.User;
-import com.example.test.integration.utils.CreateUserUtil;
-import com.example.test.integration.utils.DeleteUserUtil;
-import com.example.test.integration.utils.UserUtil;
+import com.example.constants.endpoints.user.EndpointUser;
+import com.example.utils.user.CreateUserUtil;
+import com.example.utils.user.DeleteUserUtil;
+import com.example.utils.user.UserUtil;
+import com.example.utils.rest.RestUtil;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Story;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 @Tag("test-containers")
+@Story("API")
 public class UserManagementTestContainersTest extends AbstractTestContainersIntegrationTest {
 
     private DeleteUserUtil deleteUserUtil;
     private CreateUserUtil createUserUtil;
     private UserUtil userUtil;
+    @Autowired
+    private RestUtil rest;
 
    @BeforeEach
    void setUp(){
@@ -31,21 +40,22 @@ public class UserManagementTestContainersTest extends AbstractTestContainersInte
 
     @Test
     void createUser_shouldReturnCreatedUser() {
-        UserCreateRequest request = new UserCreateRequest(
-                "John","Doe","QA","john.doe@example.com");
+       Response createUserReq = Allure.step("Шаг 1. Выполняем запрос " + EndpointUser.CREATE, () -> {
+            UserCreateRequest request = new UserCreateRequest(
+                    "John","Doe","QA","john.doe@example.com");
 
-        int id = given()
-                .contentType(ContentType.JSON)
-                .body(request)
-        .when()
-                .post(EndpointUser.CREATE)
-        .then()
-                .statusCode(200)
-                .body("firstName", equalTo("John"))
-                .body("lastName", equalTo("Doe"))
-                .extract().path("id");
+            return rest.serviceName(ServiceName.USER_MANAGEMENT)
+                    .post(EndpointUser.CREATE)
+                    .body(request)
+                    .send();
+        });
 
-        deleteUserUtil.deleteUSer(id);
+       createUserReq.then()
+               .statusCode(HttpStatus.OK.value())
+               .body("firstName", equalTo("John"))
+               .body("lastName", equalTo("Doe"));
+//               .extract().path("id");
+
     }
 
     @Test
@@ -57,7 +67,7 @@ public class UserManagementTestContainersTest extends AbstractTestContainersInte
         .when()
                 .get(EndpointUser.USER_BY_ID, id)
         .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body("firstName", equalTo("createdFirstName"))
                 .body("lastName", equalTo("createdLastName"));
 
@@ -82,7 +92,7 @@ public class UserManagementTestContainersTest extends AbstractTestContainersInte
                 .when()
                 .put(EndpointUser.USER_BY_ID, id)
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body("firstName", equalTo("UpdatedFirst"))
                 .body("lastName", equalTo("UpdatedLast"))
                 .body("job", equalTo("UpdatedJob"))
@@ -101,14 +111,14 @@ public class UserManagementTestContainersTest extends AbstractTestContainersInte
                 .when()
                 .delete(EndpointUser.USER_BY_ID, id)
                 .then()
-                .statusCode(204);
+                .statusCode(HttpStatus.NO_CONTENT.value());
 
         // Проверяем что пользователь удален
         given()
                 .when()
                 .get(EndpointUser.USER_BY_ID, id)
                 .then()
-                .statusCode(404);
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test

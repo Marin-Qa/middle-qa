@@ -1,7 +1,8 @@
 package com.example.test.integration;
 
 import com.example.base.AbstractIntegrationTest;
-import com.example.endpoint.user.EndpointUser;
+import com.example.constants.endpoints.user.EndpointUser;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,8 +15,9 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 @Tag("integration")
+@Story("Services")
 public class GetUserById extends AbstractIntegrationTest {
 
     @ParameterizedTest

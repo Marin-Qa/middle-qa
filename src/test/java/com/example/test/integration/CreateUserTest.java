@@ -1,9 +1,10 @@
 package com.example.test.integration;
 
 import com.example.base.AbstractIntegrationTest;
-import com.example.endpoint.user.EndpointUser;
-import com.example.test.integration.utils.DeleteUserUtil;
-import com.example.test.integration.utils.GetUserUtil;
+import com.example.constants.endpoints.user.EndpointUser;
+import com.example.utils.user.DeleteUserUtil;
+import com.example.utils.user.GetUserUtil;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -20,6 +21,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @Tag("integration")
+@Story("Services")
 public class CreateUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;
