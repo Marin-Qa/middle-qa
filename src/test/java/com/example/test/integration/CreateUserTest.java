@@ -2,15 +2,21 @@ package com.example.test.integration;
 
 import com.example.base.AbstractIntegrationTest;
 import com.example.constants.endpoints.user.EndpointUser;
+import com.example.constants.services.ServiceName;
+import com.example.utils.rest.RestUtil;
 import com.example.utils.user.DeleteUserUtil;
 import com.example.utils.user.GetUserUtil;
-import io.qameta.allure.Story;
+import io.qameta.allure.*;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -22,11 +28,13 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @Tag("integration")
 @DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
-@Story("Integration")
+@Story("Создание пользователя")
 public class CreateUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;
     private DeleteUserUtil deleteUserUtil;
+    @Autowired
+    RestUtil rest;
 
     @BeforeEach
     void setGetUserUtil(){
@@ -37,31 +45,30 @@ public class CreateUserTest extends AbstractIntegrationTest {
     @ParameterizedTest
     @DisplayName("Создание нового пользователя")
     @MethodSource("createUserValues")
+    @Description("Проверяем создание пользователя. С реальной бд (в данном случае h2)")
+    @Owner("Marin")
+    @Severity(SeverityLevel.CRITICAL)
     void createUser_shouldReturnCreatedUser(String firstName, String lastName, String job, String email) {
 
-        Map<String, String> userRequest = Map.of(
-                "firstName", firstName,
-                "lastName", lastName,
-                "job", job,
-                "email", email
-        );
+        Response createUerReq = Allure.step("Выполняем запрос " + EndpointUser.CREATE, () -> {
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> createdUser =
-                given()
-                        .spec(requestSpecification)
-                        .body(userRequest)
-                .when()
-                        .post(EndpointUser.CREATE)
-                .then()
-                        .statusCode(200)
-                        .body("id", notNullValue())
-                        .body("firstName", equalTo(firstName))
-                        .body("lastName", equalTo(lastName))
-                        .body("job", equalTo(job))
-                        .body("email", equalTo(email))
-                        .extract()
-                        .as(Map.class);
+            Map<String, String> userRequest = Map.of(
+                    "firstName", firstName,
+                    "lastName", lastName,
+                    "job", job,
+                    "email", email
+            );
+            return rest.serviceName(ServiceName.USER_MANAGEMENT)
+                    .post(EndpointUser.CREATE)
+                    .body(userRequest)
+                    .send();
+        });
+
+        var createdUser = createUerReq.then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(Map.class);
+
 
         assertThat(createdUser.get("id")).as("ID пользователя").isNotNull();
         assertThat(createdUser.get("firstName")).as("Имя пользователя").isEqualTo(firstName);
@@ -82,7 +89,6 @@ public class CreateUserTest extends AbstractIntegrationTest {
         deleteUserUtil.deleteUSer(userCreatedId);
     }
 
-    // Метод поставки значений для параметризации
     static Stream<Arguments> createUserValues() {
         return Stream.of(
                 arguments("Emily", "Johnson", "QA", "emily.johnson@dummy.com"),

@@ -2,9 +2,16 @@ package com.example.test.integration;
 
 import com.example.base.AbstractIntegrationTest;
 import com.example.constants.endpoints.user.EndpointUser;
+import com.example.constants.request.PathParamsName;
+import com.example.constants.services.ServiceName;
+import com.example.utils.rest.RestUtil;
 import com.example.utils.user.GetUserUtil;
 import com.example.utils.user.UserUtil;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Owner;
 import io.qameta.allure.Story;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -12,6 +19,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -23,7 +32,7 @@ import static org.hamcrest.Matchers.*;
 
 @Tag("integration")
 @DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
-@Story("Integration")
+@Story("Изменение пользователя")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PutUserTest extends AbstractIntegrationTest {
 
@@ -35,6 +44,9 @@ public class PutUserTest extends AbstractIntegrationTest {
     private GetUserUtil getUserUtil;
     private UserUtil userUtil;
 
+    @Autowired
+    RestUtil rest;
+
     @BeforeEach
     void setGetUserUtil(){
         getUserUtil = new GetUserUtil(requestSpecification);
@@ -43,7 +55,9 @@ public class PutUserTest extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @DisplayName("Проверка изменения пользователя")
+    @Description("Проверяем изменение пользователя. С реальной бд (в данном случае h2)")
     @MethodSource("putUserValue")
+    @Owner("Marin")
     void putUser_shouldPutUSerInDb( String firstName, String lastName, String job, String email) {
 
         var user = getUserUtil.getUserWithRetry(10,500);
@@ -61,17 +75,19 @@ public class PutUserTest extends AbstractIntegrationTest {
                 "email", email
         );
 
-         given()
-                 .spec(requestSpecification)
-                 .pathParams("id", id)
-                 .body(userUpdate)
-         .when()
-                 .put(EndpointUser.PUT)
-         .then()
+        Response putUserReq = Allure.step("Шаг 1. Выполняем запрос " + EndpointUser.PUT,() ->
+                rest.serviceName(ServiceName.USER_MANAGEMENT)
+                        .put(EndpointUser.PUT)
+                        .pathParam(PathParamsName.ID, id)
+                        .body(userUpdate)
+                        .send()
+        );
 
-                 .statusCode(200)
+        putUserReq.then()
 
-                 .body("firstName", equalTo(firstName));
+                .statusCode(HttpStatus.OK.value())
+
+                .body("firstName", equalTo(firstName));
 
         var putUser = getUserUtil.getUser(id);
 
