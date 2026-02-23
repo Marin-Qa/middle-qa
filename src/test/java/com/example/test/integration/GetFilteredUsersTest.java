@@ -1,36 +1,54 @@
 package com.example.test.integration;
 
 import com.example.base.AbstractIntegrationTest;
-import com.example.endpoint.user.EndpointUser;
+import com.example.constants.endpoints.user.EndpointUser;
+import com.example.constants.request.QueryParamsName;
+import com.example.constants.services.ServiceName;
+import com.example.utils.rest.RestUtil;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Owner;
+import io.qameta.allure.Story;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @Tag("integration")
+@DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
+@Story("Поски пользователя по идентификаторам")
 public class GetFilteredUsersTest extends AbstractIntegrationTest {
+
+    @Autowired
+    RestUtil rest;
 
     @ParameterizedTest
     @DisplayName("Поиск по идентификаторам пользователя")
+    @Description("Проверяем по идентификаторам пользователя. С реальной бд (в данном случае h2)")
     @MethodSource("getUsersByIdent")
-    void getUsers_shouldReturnListOfUsers_whenUserIdent(String queryName, String queryValue){
+    @Owner("Marin")
+    void getUsers_shouldReturnListOfUsers_whenUserIdent(String queryName, String queryValue) {
 
-        given()
-                .spec(requestSpecification)
-                .queryParam(queryName, queryValue)
-                .when()
-                .get(EndpointUser.FILTERED)
-                .then()
-                .statusCode(200)
+        Response userByIdent = Allure.step("Шаг 1. Выполняем запрос " + EndpointUser.FILTERED, () ->
+                rest.serviceName(ServiceName.USER_MANAGEMENT)
+                        .get(EndpointUser.FILTERED)
+                        .queryParam(queryName, queryValue)
+                        .send()
+        );
+
+        userByIdent.then()
+                .statusCode(HttpStatus.OK.value())
 
                 .body("page", notNullValue())
                 .body("users_total", notNullValue())
@@ -65,16 +83,21 @@ public class GetFilteredUsersTest extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @DisplayName("Поиск по id")
+    @Description("Проверяем по id пользователя. С реальной бд (в данном случае h2)")
     @MethodSource("getUsersWhenFilterByIDs")
+    @Owner("Marin")
     void getUsers_shouldReturnUser_whenFilterByID(int queryValue){
-        given()
-                .spec(requestSpecification)
-                .queryParam("id", queryValue)
-        .when()
-                .get(EndpointUser.FILTERED)
-        .then()
 
-                .statusCode(200)
+        Response userById = Allure.step("Шаг 1. Выполняем запрос " + EndpointUser.FILTERED, () ->
+                rest.serviceName(ServiceName.USER_MANAGEMENT)
+                        .get(EndpointUser.FILTERED)
+                        .queryParam(QueryParamsName.ID, String.valueOf(queryValue))
+                        .send()
+        );
+
+        userById.then()
+
+                .statusCode(HttpStatus.OK.value())
 
                 .body("page", notNullValue())
                 .body("users_total", notNullValue())
@@ -107,17 +130,21 @@ public class GetFilteredUsersTest extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @DisplayName("Проверка пагинации пользователей")
+    @Description("Проверяем пагинацию пользователей. С реальной бд (в данном случае h2)")
     @MethodSource("paginationArguments")
+    @Owner("Marin")
     void getUsers_shouldReturnCorrectPage_whenPagination(int page, int size) {
 
-        given()
-                .spec(requestSpecification)
-                .queryParam("page", page)
-                .queryParam("size", size)
-        .when()
-                .get(EndpointUser.FILTERED)
-        .then()
-                .statusCode(200)
+        Response users = Allure.step("Шаг 1. Выполняем запрос " + EndpointUser.FILTERED, () ->
+                rest.serviceName(ServiceName.USER_MANAGEMENT)
+                        .get(EndpointUser.FILTERED)
+                        .queryParam(QueryParamsName.PAGE, String.valueOf(page))
+                        .queryParam(QueryParamsName.SIZE, String.valueOf(size))
+                        .send()
+        );
+
+        users.then()
+                .statusCode(HttpStatus.OK.value())
 
                 .body("page", equalTo(page))
                 .body("users_total", notNullValue())

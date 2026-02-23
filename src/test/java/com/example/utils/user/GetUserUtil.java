@@ -1,7 +1,10 @@
-package com.example.test.integration.utils;
+package com.example.utils.user;
 
-import com.example.endpoint.user.EndpointUser;
+import com.example.constants.endpoints.user.EndpointUser;
+import com.example.constants.request.PathParamsName;
 import io.restassured.specification.RequestSpecification;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Random;
@@ -20,11 +23,11 @@ public class GetUserUtil{
     public Map<String, Object> getUser(int id){
         return given()
                 .spec(spec)
-                .pathParams("id", id)
+                .pathParams(PathParamsName.ID, id)
                 .when()
                 .get(EndpointUser.USER_BY_ID)
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .extract().as(Map.class);
     }
 

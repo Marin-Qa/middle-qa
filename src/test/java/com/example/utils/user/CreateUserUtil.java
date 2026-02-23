@@ -1,12 +1,11 @@
-package com.example.test.integration.utils;
+package com.example.utils.user;
 
-import com.example.endpoint.user.EndpointUser;
+import com.example.constants.endpoints.user.EndpointUser;
 import io.restassured.specification.RequestSpecification;
 
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-
 
 public class CreateUserUtil{
 

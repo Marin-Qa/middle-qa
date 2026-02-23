@@ -1,6 +1,9 @@
-package com.example.endpoint.user;
+package com.example.constants.endpoints.user;
 
 public abstract class EndpointUser {
+
+    public EndpointUser() {}
+
     public static final String FILTERED = "/api/users/filtered";
     public static final String USERS = "/api/users";
     public static final String USER_BY_ID = "/api/users/{id}";
