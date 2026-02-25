@@ -9,7 +9,6 @@ import com.example.dto.user.UserUpdateRequest;
 import com.example.constants.endpoints.user.EndpointUser;
 import com.example.utils.rest.RestUtil;
 import io.qameta.allure.*;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @Tag("e2e")

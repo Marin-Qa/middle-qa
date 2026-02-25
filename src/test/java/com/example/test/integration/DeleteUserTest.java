@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
 
 @Tag("integration")
 @DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")

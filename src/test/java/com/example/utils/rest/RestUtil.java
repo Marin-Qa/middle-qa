@@ -67,13 +67,9 @@ public class RestUtil {
 
         response = Allure.step("HTTP запрос: " + method + " " + endpoint, step -> {
 
-            // Path параметры
             pathParams.forEach((k,v) -> step.parameter("Path param: " + k, v));
-            // Query параметры
             queryParams.forEach((k,v) -> step.parameter("Query param: " + k, v));
-            // Headers
             headers.forEach((k,v) -> step.parameter("Header: " + k, v));
-            // Тело запроса
             if (requestBody != null) {
                 Allure.addAttachment("Тело запроса", ContentType.JSON.toString(), requestBody);
             }

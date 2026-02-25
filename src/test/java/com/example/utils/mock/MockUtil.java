@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+
 @Component
 public class MockUtil {
 
