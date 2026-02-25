@@ -5,7 +5,6 @@ import com.example.entity.*;
 import com.example.exception.UserNotFoundException;
 import com.example.mapping.UserMapper;
 import com.example.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

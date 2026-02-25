@@ -25,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.hamcrest.Matchers.*;

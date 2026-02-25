@@ -22,7 +22,6 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @Tag("integration")
@@ -64,29 +63,6 @@ public class GetUserById extends AbstractIntegrationTest {
                 .body("lastName", allOf(notNullValue(), not(emptyString())))
                 .body("job", allOf(notNullValue(), not(emptyString())))
                 .body("email", allOf(notNullValue(), not(emptyString())));
-
-//        given()
-//                .spec(requestSpecification)
-//                .pathParams("id", id)
-//        .when()
-//                .get(EndpointUser.USER_BY_ID)
-//        .then()
-//
-//                .statusCode(200)
-//
-//                .body("$", allOf(
-//                        hasKey("id"),
-//                        hasKey("firstName"),
-//                        hasKey("lastName"),
-//                        hasKey("job"),
-//                        hasKey("email")
-//                ))
-//
-//                .body("id", notNullValue())
-//                .body("firstName", allOf(notNullValue(), not(emptyString())))
-//                .body("lastName", allOf(notNullValue(), not(emptyString())))
-//                .body("job", allOf(notNullValue(), not(emptyString())))
-//                .body("email", allOf(notNullValue(), not(emptyString())));
     }
 
     static Stream<Arguments> getUsersById() {
