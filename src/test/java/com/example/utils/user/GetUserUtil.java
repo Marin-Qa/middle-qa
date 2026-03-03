@@ -4,7 +4,6 @@ import com.example.constants.endpoints.user.EndpointUser;
 import com.example.constants.request.PathParamsName;
 import io.restassured.specification.RequestSpecification;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Random;
