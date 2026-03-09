@@ -39,11 +39,7 @@ test:
     - java -jar "$APP_JAR" --spring.profiles.active=test &
 
     # 5. Ждём, пока приложение поднимется на 8081 (любая HTTP-ответность)
-    - |
-      until curl -sS http://localhost:8081 > /dev/null 2>&1; do
-        echo "waiting for app on 8081..."
-        sleep 5
-      done
+    - until curl -sS http://localhost:8081 > /dev/null 2>&1; do echo "waiting for app on 8081..."; sleep 5; done
 
     # 6. Гоним все тесты (unit + integration/e2e), которые стучатся в запущенный JAR
     - mvn verify -B
