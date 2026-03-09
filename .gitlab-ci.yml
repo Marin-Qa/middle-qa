@@ -1,0 +1,74 @@
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+stages:
+  - test
+  - build
+
+# Кэширование Maven зависимостей
+.maven_cache: &maven_cache
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-maven
+    paths:
+      - .m2/repository
+
+# Все тесты (unit + integration с Testcontainers)
+# Testcontainers требует Docker-in-Docker для запуска PostgreSQL
+test:
+  stage: test
+  image: maven:3.9-eclipse-temurin-21
+  services:
+    - name: docker:24-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  <<: *maven_cache
+  script:
+    # 1. Собираем JAR без запуска тестов
+    - mvn clean package -DskipTests -B
+
+    # 2. Находим собранный JAR (имя может меняться)
+    - export APP_JAR="$(ls target/*.jar | grep -v '\.original\.jar' | head -n 1)"
+    - echo "Using JAR: $APP_JAR"
+
+    # 3. Устанавливаем curl для проверки готовности приложения
+    - apt-get update && apt-get install -y curl
+
+    # 4. Запускаем приложение из JAR с профилем test (H2 на 8081)
+    - java -jar "$APP_JAR" --spring.profiles.active=test &
+
+    # 5. Ждём, пока приложение поднимется на 8081 (любая HTTP-ответность)
+    - |
+      until curl -sS http://localhost:8081 > /dev/null 2>&1; do
+        echo "waiting for app on 8081..."
+        sleep 5
+      done
+
+    # 6. Гоним все тесты (unit + integration/e2e), которые стучатся в запущенный JAR
+    - mvn verify -B
+  artifacts:
+    when: always
+    paths:
+      - target/allure-results/
+      - target/surefire-reports/
+      - target/failsafe-reports/
+    reports:
+      junit: target/surefire-reports/TEST-*.xml
+
+# Сборка Docker-образа приложения (только для main/master)
+# Сборка Maven выполняется внутри Dockerfile
+build-docker:
+  stage: build
+  needs: [test]
+  image: docker:24
+  services:
+    - name: docker:24-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

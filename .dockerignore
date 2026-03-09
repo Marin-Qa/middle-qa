@@ -1,0 +1,12 @@
+target/
+.git/
+.gitignore
+.m2/
+.idea/
+*.iml
+.allure/
+allure-results/
+allure-report/
+*.md
+.env
+.env.*
