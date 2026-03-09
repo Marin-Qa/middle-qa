@@ -25,23 +25,12 @@ test:
     DOCKER_TLS_CERTDIR: ""
   <<: *maven_cache
   script:
-    # 1. Собираем JAR без запуска тестов
     - mvn clean package -DskipTests -B
-
-    # 2. Находим собранный JAR (имя может меняться)
     - export APP_JAR="$(ls target/*.jar | grep -v '\.original\.jar' | head -n 1)"
-    - echo "Using JAR: $APP_JAR"
-
-    # 3. Устанавливаем curl для проверки готовности приложения
+    - echo "Using JAR - $APP_JAR"
     - apt-get update && apt-get install -y curl
-
-    # 4. Запускаем приложение из JAR с профилем test (H2 на 8081)
     - java -jar "$APP_JAR" --spring.profiles.active=test &
-
-    # 5. Ждём, пока приложение поднимется на 8081 (любая HTTP-ответность)
     - until curl -sS http://localhost:8081 > /dev/null 2>&1; do echo "waiting for app on 8081..."; sleep 5; done
-
-    # 6. Гоним все тесты (unit + integration/e2e), которые стучатся в запущенный JAR
     - mvn verify -B
   artifacts:
     when: always
