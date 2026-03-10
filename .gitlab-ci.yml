@@ -40,8 +40,6 @@ test:
     reports:
       junit: target/surefire-reports/TEST-*.xml
 
-# Сборка Docker-образа приложения (только для main/master)
-# Сборка Maven выполняется внутри Dockerfile
 build-docker:
   stage: build
   needs: [test]
@@ -53,9 +51,14 @@ build-docker:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
   script:
-    - IMAGE_NAME="${CI_REGISTRY_IMAGE:-$CI_PROJECT_NAME}"
-    - echo "Using image name: ${IMAGE_NAME}"
-    - docker build -t "${IMAGE_NAME}:${CI_COMMIT_SHA}" -t "${IMAGE_NAME}:latest" .
+    - >
+      if [ -n "$CI_REGISTRY_IMAGE" ]; then
+        IMAGE_NAME="$CI_REGISTRY_IMAGE";
+      else
+        IMAGE_NAME="$CI_PROJECT_NAME";
+      fi;
+      echo "Using image name: ${IMAGE_NAME}";
+      docker build -t "${IMAGE_NAME}:${CI_COMMIT_SHA}" -t "${IMAGE_NAME}:latest" .
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
