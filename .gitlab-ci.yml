@@ -4,6 +4,7 @@ variables:
 stages:
   - test
   - build
+  - report
 
 # Кэширование Maven зависимостей
 .maven_cache: &maven_cache
@@ -12,10 +13,11 @@ stages:
     paths:
       - .m2/repository
 
-# Все тесты (unit + integration с Testcontainers)
-# Testcontainers требует Docker-in-Docker для запуска PostgreSQL
 test:
   stage: test
+  image: maven:3.9-eclipse-temurin-21
+  tags:
+    - Runner
   image: maven:3.9-eclipse-temurin-21
   services:
     - name: docker:24-dind
@@ -57,3 +59,18 @@ build-docker:
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+allure-report:
+  stage: report
+  needs:
+    - job: test
+      artifacts: true
+      optional: true   # запускать даже если test упал
+  when: always         # всегда пытаться построить отчёт
+  image: frankescobar/allure-docker-service
+  script:
+    - allure generate target/allure-results --clean -o allure-report
+  artifacts:
+    when: always
+    paths:
+      - allure-report
