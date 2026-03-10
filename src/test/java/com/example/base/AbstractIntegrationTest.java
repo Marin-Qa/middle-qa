@@ -53,8 +53,6 @@ public abstract class AbstractIntegrationTest {
         .queryParam(QueryParamsName.LIMIT, "100")
         .send();
 
-        System.out.println("запрашиваем пользователей");
-
         getUsers.then()
         .statusCode(HttpStatus.OK.value());
     }

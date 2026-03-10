@@ -53,7 +53,9 @@ build-docker:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
+    - IMAGE_NAME="${CI_REGISTRY_IMAGE:-$CI_PROJECT_NAME}"
+    - echo "Using image name: ${IMAGE_NAME}"
+    - docker build -t "${IMAGE_NAME}:${CI_COMMIT_SHA}" -t "${IMAGE_NAME}:latest" .
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
