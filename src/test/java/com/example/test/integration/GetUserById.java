@@ -4,7 +4,6 @@ import com.example.base.AbstractIntegrationTest;
 import com.example.constants.endpoints.user.EndpointUser;
 import com.example.constants.request.PathParamsName;
 import com.example.constants.services.ServiceName;
-import com.example.utils.rest.RestUtil;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Description;
 import io.qameta.allure.Owner;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.util.Random;
@@ -28,9 +26,6 @@ import static org.hamcrest.Matchers.*;
 @DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
 @Story("Поиск пользователя по id")
 public class GetUserById extends AbstractIntegrationTest {
-
-    @Autowired
-    RestUtil rest;
 
     @ParameterizedTest
     @DisplayName("Получение пользователя по id по pathParam")
