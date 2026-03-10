@@ -11,7 +11,38 @@
 - Сценарии с использованием WireMock для мокирования внешних API
 - Тестирование с использованием Testcontainers (Docker) для работы с реальной базой данных
 
-Тесты написаны с использованием **JUnit 5**, **RestAssured**
+Тесты написаны с использованием **JUnit 5**, **RestAssured**.
+
+---
+
+## Требования
+
+- **Java 21**
+- **Maven 3.8+**
+- **Docker** (для тестов с Testcontainers)
+
+---
+
+## Быстрый старт
+
+**Только запустить тесты (без ручного запуска сервиса):**
+
+```bash
+git clone <url-репозитория>
+cd middle-qa
+mvn clean test
+```
+
+Так запустятся тесты, которым не нужен заранее поднятый сервис (test-containers, wiremock). Для интеграционных и E2E — см. раздел «Запуск тестов» ниже.
+
+**Запустить сервис и открыть API (Swagger):**
+
+```bash
+mvn clean package -DskipTests
+java -jar target/example-0.0.1-SNAPSHOT.jar
+```
+
+Сервис будет доступен на **http://localhost:8081**. Документация API: **http://localhost:8081/swagger-ui/index.html**.
 
 ---
 
@@ -59,58 +90,67 @@
 ---
 
 ## Запуск сервиса
-- Склонировать проект
-- Сделать jar  
-````bash
-mvn clean package 
-````
-- Запустить сервис
-````bash
-cd target/ && java -jar example-0.0.1-SNAPSHOT.jar
-````
+
+```bash
+mvn clean package -DskipTests
+java -jar target/example-0.0.1-SNAPSHOT.jar
+```
+
+Сервис слушает порт **8081**.
+
+---
 
 ## Запуск тестов
-Предусловия: 
-- Интеграционные тесты подразумевают, что бд уже наполнена пользователями. 
-Рекомендуется после запуска приложения выполнить "/sync" с limit=100. 
-````bash 
-Курлом: 
-curl -X 'POST' \
-  'http://localhost:8081/api/users/sync?limit=100' \
-  -H 'accept: */*' \
-  -d ''
-````
-Или через swagger:
-- http://localhost:8081/swagger-ui/index.html#/Users%20Management/syncUsers
 
-### 1. Требования
+### Когда нужен запущенный сервис
 
-- Java 17+
-- Maven 3.8+
-- Docker (для тестов с Testcontainers)
+Для **интеграционных** (`integration`) и **E2E** тестов сервис должен быть запущен, а БД — заполнена. После старта приложения один раз выполните синхронизацию:
 
-### 2. Запуск командой Maven
-
-**Все тесты (кроме тех, которым нужен запущенный сервис)**
+**Через curl:**
 ```bash
-mvn clean test
+curl -X POST 'http://localhost:8081/api/users/sync?limit=100' -H 'accept: */*' -d ''
 ```
-**Интеграционные тесты с H2**
-````bash
-mvn verify -Dgroups=integration
-````
-**Тесты с Testcontainers**
-````bash
-mvn clean test -Dgroups=test-containers
-````
-**WireMock тесты**
-````bash
-mvn clean test -Dgroups=wiremock
-````
-**E2E тест**
-````bash
-mvn verify -Dgroups=e2e
-````
+
+**Через Swagger:**  
+http://localhost:8081/swagger-ui/index.html#/Users%20Management/syncUsers
+
+### Команды Maven
+
+| Что запустить | Команда |
+|---------------|---------|
+| Тесты без запущенного сервиса (test-containers, wiremock) | `mvn clean test` |
+| Интеграционные тесты (H2, нужен запущенный сервис + /sync) | `mvn verify -Dgroups=integration` |
+| Тесты с Testcontainers | `mvn clean test -Dgroups=test-containers` |
+| WireMock тесты | `mvn clean test -Dgroups=wiremock` |
+| E2E (нужен запущенный сервис + /sync) | `mvn verify -Dgroups=e2e` |
+
+### Куда смотреть отчёты локально
+
+- **JUnit / Surefire:** `target/surefire-reports/` (в т.ч. `TEST-*.xml`, HTML-отчёты при наличии).
+- **Allure:** сырые результаты лежат в `target/allure-results/`. В проекте подключён Maven‑плагин Allure, поэтому HTML‑отчёт можно собирать либо внутри GitLab CI (джоб `allure-report`), либо локально через Maven без установки отдельной консольной утилиты (`allure` CLI).
+
+---
+
+## GitLab CI/CD
+
+В проекте настроен пайплайн (`.gitlab-ci.yml`). При пуше в репозиторий GitLab запускает сборку и тесты.
+
+### Этапы пайплайна
+
+| Stage   | Джоба           | Что делает |
+|---------|-----------------|------------|
+| **test**  | `test`          | Собирает JAR, поднимает приложение в контейнере, запускает все тесты (`mvn verify`). Сохраняет JUnit-отчёты и Allure-результаты. |
+| **build** | `build-docker`  | Собирает Docker-образ приложения. **Запускается только на ветке по умолчанию** (например, `master`). |
+| **report** | `allure-report` | Генерирует Allure-отчёт из результатов тестов и сохраняет его в артефакты. |
+
+**Где смотреть:** в GitLab в меню слева — **CI/CD** → **Pipelines**. Там список запусков; у каждого пайплайна — джобы и логи. JUnit-отчёты подхватываются GitLab и отображаются в разделе **Merge requests** и на странице пайплайна (тесты / тест-сьюты).
+
+### Как открыть Allure-отчёт после пайплайна
+
+1. **CI/CD** → **Pipelines** → открой последний пайплайн.
+2. Открой джоб **allure-report**.
+3. В логе джоба есть ссылка на скачивание архива с отчётом — нажми на неё (или в правой колонке **Job artifacts** → **Download**).
+4. Скачай архив, распакуй и открой в браузере файл **`public/index.html`**.
 
 
 
