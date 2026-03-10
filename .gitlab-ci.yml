@@ -75,4 +75,4 @@ allure-report:
   artifacts:
     when: always
     paths:
-      - allure-report
+      - public
