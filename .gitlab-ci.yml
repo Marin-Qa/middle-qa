@@ -68,12 +68,10 @@ allure-report:
     - job: test
       artifacts: true
       optional: true
-  when: always 
+  when: always
   image: frankescobar/allure-docker-service
   script:
-    - allure generate target/allure-results --clean -o public
-    - echo "${CI_PROJECT_URL}/-/jobs/artifacts/${CI_COMMIT_REF_SLUG}/download?job=allure-report"
-    - echo "Скачай архив → распакуй → открой в браузере файл public/index.html"
+    - allure generate target/allure-results --clean -o allure-report
   artifacts:
     when: always
     paths:
