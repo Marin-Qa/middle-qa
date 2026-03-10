@@ -4,7 +4,6 @@ import com.example.base.AbstractIntegrationTest;
 import com.example.constants.endpoints.user.EndpointUser;
 import com.example.constants.request.PathParamsName;
 import com.example.constants.services.ServiceName;
-import com.example.utils.rest.RestUtil;
 import com.example.utils.user.CreateUserUtil;
 import com.example.utils.user.GetUserUtil;
 import io.qameta.allure.Allure;
@@ -13,7 +12,6 @@ import io.qameta.allure.Owner;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
@@ -26,9 +24,6 @@ public class DeleteUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;
     private CreateUserUtil createUserUtil;
-
-    @Autowired
-    RestUtil rest;
 
     @BeforeEach
     void setUpUtil() {

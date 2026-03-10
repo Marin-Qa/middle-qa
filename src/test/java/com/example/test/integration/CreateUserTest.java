@@ -1,27 +1,32 @@
 package com.example.test.integration;
 
-import com.example.base.AbstractIntegrationTest;
-import com.example.constants.endpoints.user.EndpointUser;
-import com.example.constants.services.ServiceName;
-import com.example.utils.rest.RestUtil;
-import com.example.utils.user.DeleteUserUtil;
-import com.example.utils.user.GetUserUtil;
-import io.qameta.allure.*;
-import io.restassured.response.Response;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.Map;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.Map;
-import java.util.stream.Stream;
+import com.example.base.AbstractIntegrationTest;
+import com.example.constants.endpoints.user.EndpointUser;
+import com.example.constants.services.ServiceName;
+import com.example.utils.user.DeleteUserUtil;
+import com.example.utils.user.GetUserUtil;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Owner;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+import io.restassured.response.Response;
 
 @Tag("integration")
 @DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
@@ -30,8 +35,6 @@ public class CreateUserTest extends AbstractIntegrationTest {
 
     private GetUserUtil getUserUtil;
     private DeleteUserUtil deleteUserUtil;
-    @Autowired
-    RestUtil rest;
 
     @BeforeEach
     void setGetUserUtil(){
@@ -56,6 +59,7 @@ public class CreateUserTest extends AbstractIntegrationTest {
                     "email", email
             );
             return rest.serviceName(ServiceName.USER_MANAGEMENT)
+                    .log()
                     .post(EndpointUser.CREATE)
                     .body(userRequest)
                     .send();

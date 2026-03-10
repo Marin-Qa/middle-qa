@@ -1,36 +1,37 @@
 package com.example.test.integration;
 
-import com.example.base.AbstractIntegrationTest;
-import com.example.constants.endpoints.user.EndpointUser;
-import com.example.constants.request.PathParamsName;
-import com.example.constants.services.ServiceName;
-import com.example.utils.rest.RestUtil;
-import io.qameta.allure.Allure;
-import io.qameta.allure.Description;
-import io.qameta.allure.Owner;
-import io.qameta.allure.Story;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.http.HttpStatus;
+
+import com.example.base.AbstractIntegrationTest;
+import com.example.constants.endpoints.user.EndpointUser;
+import com.example.constants.request.PathParamsName;
+import com.example.constants.services.ServiceName;
+
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Owner;
+import io.qameta.allure.Story;
+import io.restassured.response.Response;
 
 @Tag("integration")
 @DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
 @Story("Поиск пользователя по id")
 public class GetUserById extends AbstractIntegrationTest {
-
-    @Autowired
-    RestUtil rest;
 
     @ParameterizedTest
     @DisplayName("Получение пользователя по id по pathParam")

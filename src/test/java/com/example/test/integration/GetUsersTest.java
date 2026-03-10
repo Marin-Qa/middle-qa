@@ -4,7 +4,6 @@ import com.example.base.AbstractIntegrationTest;
 import com.example.constants.endpoints.user.EndpointUser;
 import com.example.constants.request.QueryParamsName;
 import com.example.constants.services.ServiceName;
-import com.example.utils.rest.RestUtil;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Description;
 import io.qameta.allure.Owner;
@@ -13,7 +12,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static org.hamcrest.Matchers.*;
@@ -22,9 +20,6 @@ import static org.hamcrest.Matchers.*;
 @DisplayName("Интеграционные тесты с реальной бд (в этом случае с h2)")
 @Story("Поиск пользователей пол кол-ву")
 public class GetUsersTest extends AbstractIntegrationTest {
-
-    @Autowired
-    RestUtil rest;
 
     @Test
     @DisplayName("Получение нескольких пользователей из БД")
