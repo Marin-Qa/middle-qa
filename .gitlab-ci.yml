@@ -67,8 +67,8 @@ allure-report:
   needs:
     - job: test
       artifacts: true
-      optional: true   # запускать даже если test упал
-  when: always         # всегда пытаться построить отчёт
+      optional: true
+  when: always 
   image: frankescobar/allure-docker-service
   script:
     - allure generate target/allure-results --clean -o public
