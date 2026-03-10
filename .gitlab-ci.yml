@@ -72,20 +72,11 @@ allure-report:
   image: frankescobar/allure-docker-service
   script:
     - allure generate target/allure-results --clean -o public
+    # Ссылка на скачивание отчёта — нажми в GitLab, скачай архив, распакуй и открой public/index.html
+    - echo "=== Allure report: Download ==="
+    - echo "${CI_PROJECT_URL}/-/jobs/artifacts/${CI_COMMIT_REF_SLUG}/download?job=allure-report"
+    - echo "Скачай архив → распакуй → открой в браузере файл public/index.html"
   artifacts:
     when: always
     paths:
       - public
-
-pages:
-  stage: report
-  needs:
-    - job: allure-report
-      artifacts: true
-      optional: true
-  script:
-    - echo "Publishing Allure report via GitLab Pages"
-  artifacts:
-    paths:
-      - public
-  when: always
